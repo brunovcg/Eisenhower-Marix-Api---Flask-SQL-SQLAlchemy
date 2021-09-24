@@ -1,10 +1,12 @@
 from app.configs.database import db
+from app.models.tasks_categories_table import tasks_categories
 from dataclasses import dataclass
 from app.models.eisenhowers_model import EisenhowersModel as EM
 from app.models.categories_model import CategoriesModel as CM
 from flask import current_app
 import psycopg2
 from sqlalchemy.exc import IntegrityError
+
 
 @dataclass
 class TasksModel(db.Model):
@@ -18,6 +20,7 @@ class TasksModel(db.Model):
     urgency = db.Column(db.Integer)  
     eisenhower_id = db.Column(db.Integer, db.ForeignKey('eisenhowers.id'), nullable=False)
 
+    categories = db.relationship("CategoriesModel", secondary=tasks_categories, back_populates="tasks",cascade="all, delete")
 
     @staticmethod
     def create_one(data):
@@ -58,6 +61,20 @@ class TasksModel(db.Model):
 
                 return "task exists"
 
+        #  Preenchendo automatico ----------------------------------------------------------------
+
+        categories_ids = []
+        for category in data['categories']:
+            
+            cat_id = CM.query.filter_by(name=category["name"]).first()
+            categories_ids.append(cat_id.id)
+
+        for category_id in categories_ids:
+
+            task: TasksModel = TasksModel.query.get(task.id)
+            category : CM = CM.query.get(category_id)
+            category.tasks.append(task)
+            session.commit()
 
         return {
             "id" : task.id,
