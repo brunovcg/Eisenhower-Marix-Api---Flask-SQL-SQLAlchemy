@@ -9,7 +9,7 @@ def create_task():
     
     data = request.get_json()
 
-    if (data["importance"] < 0 and data["importance"] > 2 ) or (data["urgency"] < 0 and data["urgency"] > 2 ):
+    if (data["importance"] < 0 or data["importance"] > 2 ) or (data["urgency"] < 0 or data["urgency"] > 2 ):
         return jsonify({
             "error" : {
                 "valid_options" : {
@@ -26,14 +26,17 @@ def create_task():
 
     task = TM.create_one(data)
 
+    if task == "task exists":
+        return {"msg" : "Task already exixts"}, 409
+
 
     return jsonify(task), 201
 
 
-@bp_view_tasks.post("/task/<id>")
+@bp_view_tasks.patch("/task/<id>")
 def update_tasks():
     ...
 
-@bp_view_tasks.post("/task/<id>")
+@bp_view_tasks.delete("/task/<id>")
 def delete_tasks():
     ...

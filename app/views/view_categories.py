@@ -1,7 +1,6 @@
 from flask import Blueprint, request, current_app, jsonify
 from app.models.categories_model import CategoriesModel as CM
-# from sqlalchemy.exc import IntegrityError
-# import psycopg2
+
 
 bp_view_categories= Blueprint("bp_view_categories", __name__)
 
@@ -14,33 +13,9 @@ def create_category():
     category = CM.create_one(data)
 
     if category == "category exists":
-        return {"msg" : "Category already exixts"}, 400
+        return {"msg" : "Category already exixts"}, 409
 
     return jsonify(category), 201
-
-    # session = current_app.db.session
-    
-    # data = request.get_json()
-          
-    # categories = CM(**data)
-
-    # try:
-
-    #     session.add(categories)
-    #     session.commit()
-
-    # except IntegrityError as e:
-
-    #     if type(e.orig) == psycopg2.errors.UniqueViolation:
-
-    #         return {"msg" : "Category already exixts"}, 400
-          
-    # return {
-    #     "id": categories.id,
-    #     "name": categories.name,
-    #     "description": categories.description,
-    # }, 201
-
 
 
 @bp_view_categories.patch("/category/<id>")
@@ -90,6 +65,6 @@ def get_one_category(id):
 def get_all_category():
 
     all = CM.query.all()
-    
+
 
     return jsonify(all), 200

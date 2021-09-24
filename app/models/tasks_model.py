@@ -3,6 +3,8 @@ from dataclasses import dataclass
 from app.models.eisenhowers_model import EisenhowersModel as EM
 from app.models.categories_model import CategoriesModel as CM
 from flask import current_app
+import psycopg2
+from sqlalchemy.exc import IntegrityError
 
 @dataclass
 class TasksModel(db.Model):
@@ -31,21 +33,38 @@ class TasksModel(db.Model):
 
         eisenhower_qualification = EM.query.get(eisenhower_type)
    
-
-        task = TasksModel({"name" : data["name"], 
-            "description" : data["description",
+    
+        new_entry = {
+            "name" : data["name"], 
+            "description" : data["description"],
             "duration" : data["duration"],
             "importance" : data["importance"], 
             "urgency" : data["urgency"],
-            "eisenhower_id" : eisenhower_type       
-        ]})
+            "eisenhower_id" : eisenhower_type
+
+        }
+
+        session = current_app.db.session
+        task = TasksModel(**new_entry)
+
+        try:    
+
+            session.add(task)
+            session.commit()
+
+        except IntegrityError as e:
+
+            if type(e.orig) == psycopg2.errors.UniqueViolation:
+
+                return "task exists"
+
 
         return {
             "id" : task.id,
             "name" : task.name,
             "description" : task.description,
             "duration" : task.duration,
-            "eisenhower_classification" : eisenhower_qualification,
+            "eisenhower_classification" : eisenhower_qualification.type,
             "category": data["categories"]
         }
 
