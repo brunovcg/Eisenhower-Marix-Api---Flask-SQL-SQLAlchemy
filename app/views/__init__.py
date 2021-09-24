@@ -1,6 +1,8 @@
 from flask import Flask
 
 def init_app(app: Flask) -> None:
-    from .create_categories import bp_create_categories
+    from .view_categories import bp_view_categories
+    app.register_blueprint(bp_view_categories)
 
-    app.register_blueprint(bp_create_categories)
+    from .view_tasks import bp_view_tasks
+    app.register_blueprint(bp_view_tasks)
