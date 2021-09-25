@@ -23,7 +23,6 @@ class TasksModel(db.Model):
 
     @staticmethod
     def create_one(data):
-        
 
         for item in data["categories"]:
 
@@ -35,7 +34,6 @@ class TasksModel(db.Model):
 
         eisenhower_qualification = EM.query.get(eisenhower_type)
    
-    
         new_entry = {
             "name" : data["name"], 
             "description" : data["description"],
@@ -43,7 +41,6 @@ class TasksModel(db.Model):
             "importance" : data["importance"], 
             "urgency" : data["urgency"],
             "eisenhower_id" : eisenhower_type
-
         }
 
         session = current_app.db.session
@@ -82,7 +79,6 @@ class TasksModel(db.Model):
             "eisenhower_classification" : eisenhower_qualification.type,
             "category": data["categories"]
         }
-
 
     @staticmethod
     def update_one(data, task_id):

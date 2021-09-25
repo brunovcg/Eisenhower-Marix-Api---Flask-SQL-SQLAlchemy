@@ -30,7 +30,6 @@ def update_category(id):
     return jsonify({"id" : category.id, "name": category.name, "description": category.description}), 200
 
 
-
 @bp_view_categories.delete("/category/<id>")
 def delete_category(id):
 
@@ -40,8 +39,6 @@ def delete_category(id):
 
     CM.query.filter(CM.id==id).delete()
     current_app.db.session.commit()
-
-
    
     return "", 204
 

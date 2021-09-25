@@ -14,7 +14,6 @@ def create_task():
                 "valid_options" : {
                     "importance" : [1,2],
                     "urgency": [1,2]
-
             },
                 "received_options" : {
                     "importance" : data["importance"],
