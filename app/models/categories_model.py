@@ -13,8 +13,6 @@ class CategoriesModel(db.Model):
     name = db.Column(db.String(100), nullable=False, unique=True)
     description = db.Column(db.Text)
             
-    # tasks = db.relationship("TasksModel", secondary=tasks_categories, cascade="all, delete",passive_deletes=True,backref="categories")
-
     tasks = db.relationship("TasksModel", secondary=tasks_categories, back_populates="categories", passive_deletes=True)
 
     @staticmethod
@@ -23,7 +21,6 @@ class CategoriesModel(db.Model):
         categories = CategoriesModel(**data)
 
         try:    
-
             session.add(categories)
             session.commit()
 
@@ -38,4 +35,3 @@ class CategoriesModel(db.Model):
         "name": categories.name,
         "description": categories.description,
          }
-

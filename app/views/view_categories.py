@@ -1,9 +1,7 @@
 from flask import Blueprint, request, current_app, jsonify
 from app.models.categories_model import CategoriesModel as CM
 
-
 bp_view_categories= Blueprint("bp_view_categories", __name__)
-
 
 @bp_view_categories.post("/category")
 def create_category():
@@ -29,14 +27,12 @@ def update_category(id):
     if not category:
         return {"msg" : "Category not found"}, 404
         
-
     return jsonify({"id" : category.id, "name": category.name, "description": category.description}), 200
 
 
 
 @bp_view_categories.delete("/category/<id>")
 def delete_category(id):
-
 
     category = CM.query.get(id)
     if not category:
@@ -59,12 +55,3 @@ def get_one_category(id):
         return {"msg" : "Category not found"}, 404
    
     return jsonify({"id" : category.id, "name": category.name, "description": category.description}), 200
-
-
-@bp_view_categories.get("/")
-def get_all_category():
-
-    all = CM.query.all()
-
-
-    return jsonify(all), 200

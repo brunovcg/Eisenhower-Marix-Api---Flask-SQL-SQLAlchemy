@@ -7,7 +7,6 @@ from flask import current_app
 import psycopg2
 from sqlalchemy.exc import IntegrityError
 
-
 @dataclass
 class TasksModel(db.Model):
     __tablename__ = 'tasks'
@@ -51,7 +50,6 @@ class TasksModel(db.Model):
         task = TasksModel(**new_entry)
 
         try:    
-
             session.add(task)
             session.commit()
 
@@ -61,7 +59,7 @@ class TasksModel(db.Model):
 
                 return "task exists"
 
-        #  Preenchendo automatico ----------------------------------------------------------------
+        #  Preenchendo automatico a tabela PIVOT----------------------------------------------------------------
 
         categories_ids = []
         for category in data['categories']:
@@ -94,20 +92,16 @@ class TasksModel(db.Model):
             return "task not found"   
 
         try:
-            # data['importance']:
             new_importance = data['importance']
         except KeyError:
             new_importance = task.importance
-        
 
         try:
             new_urgency = data['urgency']
         except KeyError:
             new_urgency = task.urgency
            
-   
         eisenhower_type = EM.get_type(new_importance, new_urgency)
-        
         
         new_classification= EM.query.get(eisenhower_type)
 
@@ -121,6 +115,3 @@ class TasksModel(db.Model):
             "duration" : task.duration,
             "eisenhower_classification" : new_classification.type
         }
-
-
-    

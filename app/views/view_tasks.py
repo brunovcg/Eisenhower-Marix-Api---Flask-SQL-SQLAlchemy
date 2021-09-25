@@ -1,8 +1,5 @@
 from flask import Blueprint, request, current_app, jsonify
 from app.models.tasks_model import TasksModel as TM
-import psycopg2
-from sqlalchemy.exc import IntegrityError
-
 
 bp_view_tasks = Blueprint("bp_view_tasks", __name__)
 
@@ -30,8 +27,7 @@ def create_task():
 
     if task == "task exists":
         return {"msg" : "Task already exixts"}, 409
-
-
+        
     return jsonify(task), 201
 
 
@@ -39,16 +35,12 @@ def create_task():
 def update_tasks(id):
     data = request.json
 
-
     new_entry = TM.update_one(data,id)
 
     if new_entry == "task not found":
         return {"msg":"task not found"}, 404
 
     return jsonify(new_entry),200 
-
-
-    ...
 
 @bp_view_tasks.delete("/task/<id>")
 def delete_tasks(id):
@@ -58,6 +50,5 @@ def delete_tasks(id):
 
     TM.query.filter(TM.id==id).delete()
     current_app.db.session.commit()
-
    
     return "", 204
