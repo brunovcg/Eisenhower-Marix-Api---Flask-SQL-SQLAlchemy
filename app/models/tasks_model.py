@@ -85,4 +85,42 @@ class TasksModel(db.Model):
             "category": data["categories"]
         }
 
+
+    @staticmethod
+    def update_one(data, task_id):
+        
+        task = TasksModel.query.get(task_id)
+        if not task:
+            return "task not found"   
+
+        try:
+            # data['importance']:
+            new_importance = data['importance']
+        except KeyError:
+            new_importance = task.importance
+        
+
+        try:
+            new_urgency = data['urgency']
+        except KeyError:
+            new_urgency = task.urgency
+           
+   
+        eisenhower_type = EM.get_type(new_importance, new_urgency)
+        
+        
+        new_classification= EM.query.get(eisenhower_type)
+
+        TasksModel.query.filter(TasksModel.id == task_id).update(data)
+        current_app.db.session.commit()
+
+        return {
+            "id": task.id,
+            "name" : task.name,
+            "description" : task.description,
+            "duration" : task.duration,
+            "eisenhower_classification" : new_classification.type
+        }
+
+
     

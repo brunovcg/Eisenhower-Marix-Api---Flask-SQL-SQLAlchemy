@@ -39,11 +39,13 @@ def create_task():
 def update_tasks(id):
     data = request.json
 
-    TM.query.filter(TM.id==id).update(data)
-    current_app.db.session.commit()
-    task = TM.query.get(id)
 
-    return "",200 
+    new_entry = TM.update_one(data,id)
+
+    if new_entry == "task not found":
+        return {"msg":"task not found"}, 404
+
+    return jsonify(new_entry),200 
 
 
     ...
@@ -56,18 +58,6 @@ def delete_tasks(id):
 
     TM.query.filter(TM.id==id).delete()
     current_app.db.session.commit()
-
-    # try:
-
-    #     TM.query.filter(TM.id==id).delete()
-    #     current_app.db.session.commit()
-
-    # except IntegrityError as e:
-    
-    #     if type(e.orig) == psycopg2.errors.ForeignKeyViolation:
-            
-        
-    #         return "This task is been used on other ", 400
 
    
     return "", 204
